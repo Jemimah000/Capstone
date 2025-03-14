@@ -1,0 +1,60 @@
+/* Background Video Styling */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Centering the Logo and Text */
+.logo-container {
+  display: flex;
+  flex-direction: column;  /* Stacks items vertically */
+  align-items: center;  
+  justify-content: center;  
+  position: absolute;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: scaleUp 1.5s ease-in-out;
+}
+
+/* Logo Styling */
+.logo {
+  width: 300px; /* Increased size */
+  height: auto;
+  margin-bottom: 20px; /* Adds space between the logo and text */
+  animation: fadeIn 2s ease-in-out;
+}
+
+/* Aura Text Styling */
+.aura-text {
+  font-size: 100px; /* Increased size */
+  font-weight: bold;
+  color: #26e0f5;
+  text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  opacity: 0;
+  animation: fadeInText 2s ease-in-out 1s forwards;
+}
+
+/* Logo Scale-Up Animation */
+@keyframes scaleUp {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Fade-In Animation */
+@keyframes fadeInText {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
