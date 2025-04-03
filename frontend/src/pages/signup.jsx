@@ -25,7 +25,7 @@ export default function Signup() {
 
     try {
       await axios.post("http://localhost:5000/auth/signup", formData); // Ensure backend URL is correct
-      navigate("/mainpg");
+      navigate("/login");
     } catch (error) {
       setError(error.response?.data?.message || "Signup failed");
     }

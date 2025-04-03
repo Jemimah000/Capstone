@@ -4,7 +4,7 @@ import axios from "axios";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -15,7 +15,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      await axios.post("/auth/login", formData);
+      await axios.post("http://localhost:5000/auth/login", formData);
       navigate("/mainpg");
     } catch (error) {
       setError(error.response?.data?.message || "Login failed");
@@ -34,11 +34,11 @@ export default function Login() {
         {/* Error Message */}
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        {/* Username Input */}
+        {/* Email Input */}
         <input 
           type="text"
-          name="username"
-          placeholder="Username"
+          name="email"
+          placeholder="email"
           value={formData.username}
           onChange={handleChange}
           className="w-full px-3 py-2 bg-transparent border-b border-white text-white outline-none"
