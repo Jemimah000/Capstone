@@ -9,7 +9,9 @@ dotenv.config();
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON
-app.use(cors()); // 🔥 Allow CORS for all origins
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+}));// 🔥 Allow CORS for all origins
 
 // MongoDB connection
 app.use("/auth",authRouter)
@@ -20,7 +22,7 @@ app.get("/", (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5004;
 app.listen(PORT, () => {
   try {
   connectDB
