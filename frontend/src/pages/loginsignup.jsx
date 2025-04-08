@@ -4,7 +4,7 @@ export default function LoginSignup() {
   const navigate = useNavigate();
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-cover bg-center bg-[url('../public/background.jpg')]">
+    <div className="w-screen h-screen flex items-center justify-center bg-cover bg-center bg-[url('./background.jpg')]">
       <div className="flex space-x-20">
         <button
          onClick={()=> navigate("/login")}

@@ -15,15 +15,15 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/auth/login", formData);
-      navigate("/mainpg");
+      await axios.post("http://localhost:5004/auth/login", formData);
+      navigate("/name");
     } catch (error) {
       setError(error.response?.data?.message || "Login failed");
     }
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-center bg-cover bg-[url('../public/background.jpg')]">
+    <div className="w-screen h-screen flex items-center justify-center bg-center bg-cover bg-[url('./background.jpg')]">
       <div className="w-80 h-auto flex flex-col items-center justify-center gap-y-4 px-6 py-4 text-white 
                       bg-[rgba(255,255,255,0.2)] border border-white backdrop-blur-md 
                       rounded-xl shadow-lg">

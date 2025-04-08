@@ -24,7 +24,7 @@ export default function Signup() {
     }
 
     try {
-      await axios.post("http://localhost:5000/auth/signup", formData); // Ensure backend URL is correct
+      await axios.post("http://localhost:5004/auth/signup", formData); // Ensure backend URL is correct
       navigate("/login");
     } catch (error) {
       setError(error.response?.data?.message || "Signup failed");
@@ -32,7 +32,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-center bg-cover bg-[url('../public/background.jpg')]">
+    <div className="w-screen h-screen flex items-center justify-center bg-center bg-cover bg-[url('./background.jpg')]">
       <div className="w-80 h-auto flex flex-col items-center justify-center gap-y-4 px-6 py-4 text-white 
                       bg-[rgba(255,255,255,0.2)] border border-white backdrop-blur-md 
                       rounded-xl shadow-lg">
