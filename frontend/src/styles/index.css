@@ -13,10 +13,10 @@
 .logo-container {
   display: flex;
   flex-direction: column;  /* Stacks items vertically */
-  align-items: center;  
-  justify-content: center;  
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  top: 50%; 
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   animation: scaleUp 1.5s ease-in-out;
@@ -24,21 +24,35 @@
 
 /* Logo Styling */
 .logo {
-  width: 300px; /* Increased size */
+  width: 300px;
   height: auto;
-  margin-bottom: 20px; /* Adds space between the logo and text */
+  margin-bottom: 20px;
   animation: fadeIn 2s ease-in-out;
 }
 
 /* Aura Text Styling */
 .aura-text {
-  font-size: 100px; /* Increased size */
+  font-size: 100px;
   font-weight: bold;
   color: #26e0f5;
   text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
   text-align: center;
   opacity: 0;
   animation: fadeInText 2s ease-in-out 1s forwards;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Tagline Styling */
+.tagline {
+  font-size: 24px;
+  font-weight: 500;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 10px;
+  opacity: 0;
+  animation: fadeInText 2s ease-in-out 2s forwards;
+  font-family: 'Open Sans', sans-serif;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 /* Logo Scale-Up Animation */

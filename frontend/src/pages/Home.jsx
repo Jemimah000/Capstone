@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import '../styles/index.css'
+import "../styles/index.css";
+
 const Home = () => {
   const navigate = useNavigate();
 
@@ -14,11 +15,12 @@ const Home = () => {
       </video>
 
       <div className="logo-container">
-    <img src="logo.png" alt="Logo" className="logo" />
-    <p className="aura-text">Aura</p> 
-       </div>
+        <img src="/logo.png" alt="Aura Gaze Logo" className="logo" />
+        <p className="aura-text">Aura Gaze</p>
+        <p className="tagline">AI You Don’t Just Chat With — You Feel</p>
+      </div>
     </div>
   );
 };
- 
+
 export default Home;
