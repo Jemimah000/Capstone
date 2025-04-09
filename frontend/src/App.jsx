@@ -6,7 +6,8 @@ import Signup from "./pages/signup";
 import './App.css';
 import NamePage from "./pages/name";
 import FrontView from "./pages/frontView";
-
+import LeftView from "./pages/leftView";
+import RightView from "./pages/RightView";
 function App() {
   return (
     <Router>
@@ -17,6 +18,8 @@ function App() {
         <Route path="/signup" element={<Signup/>}/>
         <Route path="/name" element={<NamePage/>}/>
         <Route path="/frontview" element={<FrontView/>}/>
+        <Route path="/leftview" element={<LeftView/>}/>
+        <Route path="/rightview" element={<RightView/>}/>
       </Routes>
     </Router>
   );
