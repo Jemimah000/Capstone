@@ -34,7 +34,6 @@ const FaceCapture = () => {
       const data = await response.json();
       console.log("✅ Upload Success:", data);
 
-      // 👉 Navigate to left view after successful upload
       navigate("/leftview");
 
     } catch (err) {
@@ -45,17 +44,17 @@ const FaceCapture = () => {
 
   return (
     <div className="space-y-6 flex flex-col items-center">
-      {/* Webcam feed */}
-      <div className="relative rounded-xl overflow-hidden border-2 border-white/20 shadow-md">
+      {/* Webcam feed with overlay */}
+      <div className="relative rounded-xl overflow-hidden border-2 border-white/20 shadow-md w-[400px] h-[300px]">
         <Webcam
           audio={false}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           videoConstraints={videoConstraints}
-          className="rounded-xl w-[400px] h-[300px] object-cover"
+          className="rounded-xl w-full h-full object-cover"
         />
-
-        {/* Guide overlay */}
+        
+        {/* Top-right guide image */}
         <img
           src="../FrontView.jpeg"
           alt="Guide"
@@ -63,20 +62,34 @@ const FaceCapture = () => {
         />
       </div>
 
-      {/* Capture button */}
-      <button
-        onClick={capture}
-        disabled={uploading}
-        className={`px-6 py-2 font-semibold rounded-full shadow-md transition-all duration-300
-          ${uploading
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white'}
-        `}
-      >
-        {uploading ? "Uploading..." : "Capture"}
-      </button>
+      {/* Capture + Arrow button row */}
+      <div className="flex items-center justify-between w-[400px] px-4">
+        {/* Spacer to balance the arrow button */}
+        <div className="w-10" />
 
-      {/* Captured image preview */}
+        {/* Centered Capture Button */}
+        <button
+          onClick={capture}
+          disabled={uploading}
+          className={`px-6 py-2 font-semibold rounded-full shadow-md transition-all duration-300
+            ${uploading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white'}
+          `}
+        >
+          {uploading ? "Uploading..." : "Capture"}
+        </button>
+
+        {/* Arrow Button */}
+        <button
+          onClick={() => navigate("/leftview")}
+          className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
+        >
+          →
+        </button>
+      </div>
+
+      {/* Captured preview */}
       {capturedImage && (
         <img
           src={capturedImage}

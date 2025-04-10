@@ -17,7 +17,7 @@ const Home = () => {
       <div className="logo-container">
         <img src="/logo.png" alt="Aura Gaze Logo" className="logo" />
         <p className="aura-text">Aura Gaze</p>
-        <p className="tagline">AI You Don’t Just Chat With — You Feel</p>
+        <p className="tagline">You Don’t Just Chat — You Feel</p>
       </div>
     </div>
   );
