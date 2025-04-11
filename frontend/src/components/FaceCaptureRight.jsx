@@ -8,6 +8,20 @@ const videoConstraints = {
   facingMode: 'user',
 };
 
+const dataURLtoBlob = (dataURL) => {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new Blob([u8arr], { type: mime });
+};
+
 const FaceCaptureRight = () => {
   const webcamRef = useRef(null);
   const navigate = useNavigate();
@@ -23,23 +37,24 @@ const FaceCaptureRight = () => {
   const uploadImage = async (base64Image) => {
     setUploading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/upload", {
+      const formData = new FormData();
+      formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
+  
+      const response = await fetch("http://localhost:5004/api/upload-right", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ image: base64Image, view: "right" })
+        body: formData
       });
-
+  
       const data = await response.json();
       console.log("✅ Right View Upload Success:", data);
-
-      navigate("/avatar");
-    } catch (error) {
-      console.error("❌ Right View Upload Failed:", error);
+  
+      navigate("/"); 
+    } catch (err) {
+      console.error("❌ Right View Upload Failed:", err);
     }
     setUploading(false);
   };
+  
 
   return (
     <div className="space-y-6 flex flex-col items-center">

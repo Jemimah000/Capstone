@@ -8,6 +8,20 @@ const videoConstraints = {
   facingMode: 'user',
 };
 
+const dataURLtoBlob = (dataURL) => {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new Blob([u8arr], { type: mime });
+};
+
 const FaceCaptureLeft = () => {
   const webcamRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -17,29 +31,32 @@ const FaceCaptureLeft = () => {
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     setCapturedImage(imageSrc);
-    uploadImage(imageSrc);
+
+    // Save left view to localStorage
+    localStorage.setItem("leftImage", imageSrc);
   };
 
   const uploadImage = async (base64Image) => {
     setUploading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/upload", {
+      const formData = new FormData();
+      formData.append("leftImage", dataURLtoBlob(base64Image), "left.jpg");
+  
+      const response = await fetch("http://localhost:5004/api/upload-left", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ image: base64Image, view: "left" })
+        body: formData
       });
-
+  
       const data = await response.json();
       console.log("✅ Left View Upload Success:", data);
-
+  
       navigate("/rightview");
     } catch (err) {
       console.error("❌ Left View Upload Failed:", err);
     }
     setUploading(false);
   };
+  
 
   return (
     <div className="space-y-6 flex flex-col items-center">
@@ -73,7 +90,13 @@ const FaceCaptureLeft = () => {
 
         {/* Capture Button */}
         <button
-          onClick={capture}
+          onClick={() => {
+            capture();
+            if (webcamRef.current) {
+              const img = webcamRef.current.getScreenshot();
+              if (img) uploadImage(img);
+            }
+          }}
           disabled={uploading}
           className={`px-6 py-2 font-semibold rounded-full shadow-md transition-all duration-300
             ${uploading
@@ -87,7 +110,7 @@ const FaceCaptureLeft = () => {
         {/* Next Button */}
         <button
           onClick={() => navigate("/rightview")}
-           className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
+          className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
         >
           →
         </button>
