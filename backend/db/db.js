@@ -1,16 +1,13 @@
-const mongoose = require("mongoose");
-require("dotenv").config(); // Load environment variables
+// db.js
+const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("✅ MongoDB connected");
+    await mongoose.connect('mongodb://localhost:27017/auraGazeDB');
+    console.log('✅ Connected to MongoDB');
   } catch (error) {
-    console.error("❌ MongoDB connection failed:", error.message);
-    process.exit(1); // Stop the app if DB fails
+    console.error('❌ MongoDB connection error:', error.message);
+    process.exit(1);
   }
 };
 

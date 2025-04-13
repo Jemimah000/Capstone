@@ -25,7 +25,7 @@ router.post("/upload-front", upload.single("frontImage"), (req, res) => {
   res.json({ success: true, message: "Front uploaded ✨", path: req.file.path });
 });
 
-// LEFT Upload
+// LEFT Upload (same for left, right)
 router.post("/upload-left", upload.single("leftImage"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: "Left image is required" });
@@ -49,6 +49,5 @@ router.post("/upload-right", upload.single("rightImage"), (req, res) => {
     path: req.file.path,
   });
 });
-
 
 module.exports = router;
