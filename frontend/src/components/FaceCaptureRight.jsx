@@ -30,31 +30,38 @@ const FaceCaptureRight = () => {
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
-    setCapturedImage(imageSrc);
-    uploadImage(imageSrc);
+    if (imageSrc) {
+      setCapturedImage(imageSrc);
+      localStorage.setItem("rightImage", imageSrc);
+    }
   };
 
-  const uploadImage = async (base64Image) => {
+  const uploadImage = async () => {
+    const base64Image = localStorage.getItem("rightImage");
+    if (!base64Image) {
+      console.warn("No right image found in localStorage");
+      return;
+    }
+
     setUploading(true);
     try {
       const formData = new FormData();
       formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
-  
+
       const response = await fetch("http://localhost:5004/api/upload-right", {
         method: "POST",
         body: formData
       });
-  
+
       const data = await response.json();
       console.log("✅ Right View Upload Success:", data);
-  
+
       navigate("/"); 
     } catch (err) {
       console.error("❌ Right View Upload Failed:", err);
     }
     setUploading(false);
   };
-  
 
   return (
     <div className="space-y-6 flex flex-col items-center">
@@ -94,13 +101,18 @@ const FaceCaptureRight = () => {
               : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'}
           `}
         >
-          {uploading ? "Uploading..." : "Capture Left"}
+          {uploading ? "Uploading..." : "Capture Right"}
         </button>
 
         {/* Next Button */}
         <button
-          onClick={() => navigate("/")}
-           className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
+          onClick={uploadImage}
+          disabled={uploading}
+          className={`px-4 py-2 font-bold rounded-full shadow-md
+            ${uploading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-white text-indigo-600 hover:bg-indigo-100'}
+          `}
         >
           →
         </button>

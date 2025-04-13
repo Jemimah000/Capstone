@@ -32,24 +32,27 @@ const FaceCapture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     setCapturedImage(imageSrc);
 
-    // Save front view to localStorage
+    // Save front view to localStorage for session persistence
     localStorage.setItem("frontImage", imageSrc);
   };
 
-  const uploadImage = async (base64Image) => {
+  const handleNext = async () => {
+    if (!capturedImage) return;
+
     setUploading(true);
     try {
       const formData = new FormData();
-      formData.append("frontImage", dataURLtoBlob(base64Image), "front.jpg");
-  
+      formData.append("frontImage", dataURLtoBlob(capturedImage), "front.jpg");
+
       const response = await fetch("http://localhost:5004/api/upload-front", {
         method: "POST",
-        body: formData
+        body: formData,
       });
-  
+
       const data = await response.json();
       console.log("✅ Front View Upload Success:", data);
-  
+
+      // Navigate to the next page after successful upload
       navigate("/leftview");
     } catch (err) {
       console.error("❌ Front View Upload Failed:", err);
@@ -57,11 +60,8 @@ const FaceCapture = () => {
     setUploading(false);
   };
 
-  
-
   return (
     <div className="space-y-6 flex flex-col items-center">
-      {/* Webcam feed with overlay */}
       <div className="relative rounded-xl overflow-hidden border-2 border-white/20 shadow-md w-[400px] h-[300px]">
         <Webcam
           audio={false}
@@ -70,8 +70,6 @@ const FaceCapture = () => {
           videoConstraints={videoConstraints}
           className="rounded-xl w-full h-full object-cover"
         />
-        
-        {/* Top-right guide image */}
         <img
           src="../FrontView.jpeg"
           alt="Guide"
@@ -79,12 +77,8 @@ const FaceCapture = () => {
         />
       </div>
 
-      {/* Capture + Arrow button row */}
       <div className="flex items-center justify-between w-[400px] px-4">
-        {/* Spacer to balance the arrow button */}
         <div className="w-10" />
-
-        {/* Centered Capture Button */}
         <button
           onClick={capture}
           disabled={uploading}
@@ -97,16 +91,15 @@ const FaceCapture = () => {
           {uploading ? "Uploading..." : "Capture"}
         </button>
 
-        {/* Arrow Button */}
         <button
-          onClick={() => navigate("/leftview")}
+          onClick={handleNext}
+          disabled={uploading || !capturedImage}
           className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
         >
           →
         </button>
       </div>
 
-      {/* Captured preview */}
       {capturedImage && (
         <img
           src={capturedImage}

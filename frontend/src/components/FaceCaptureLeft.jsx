@@ -14,11 +14,9 @@ const dataURLtoBlob = (dataURL) => {
   const bstr = atob(arr[1]);
   let n = bstr.length;
   const u8arr = new Uint8Array(n);
-
   while (n--) {
     u8arr[n] = bstr.charCodeAt(n);
   }
-
   return new Blob([u8arr], { type: mime });
 };
 
@@ -30,33 +28,38 @@ const FaceCaptureLeft = () => {
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
-    setCapturedImage(imageSrc);
-
-    // Save left view to localStorage
-    localStorage.setItem("leftImage", imageSrc);
+    if (imageSrc) {
+      setCapturedImage(imageSrc);
+      localStorage.setItem("leftImage", imageSrc);
+    }
   };
 
-  const uploadImage = async (base64Image) => {
+  const uploadImage = async () => {
+    const base64Image = localStorage.getItem("leftImage");
+    if (!base64Image) {
+      console.warn("No left image found in localStorage");
+      return;
+    }
+
     setUploading(true);
     try {
       const formData = new FormData();
       formData.append("leftImage", dataURLtoBlob(base64Image), "left.jpg");
-  
+
       const response = await fetch("http://localhost:5004/api/upload-left", {
         method: "POST",
-        body: formData
+        body: formData,
       });
-  
+
       const data = await response.json();
       console.log("✅ Left View Upload Success:", data);
-  
+
       navigate("/rightview");
     } catch (err) {
       console.error("❌ Left View Upload Failed:", err);
     }
     setUploading(false);
   };
-  
 
   return (
     <div className="space-y-6 flex flex-col items-center">
@@ -78,9 +81,8 @@ const FaceCaptureLeft = () => {
         />
       </div>
 
-      {/* Buttons Row: Back | Capture | Next */}
+      {/* Buttons Row */}
       <div className="flex justify-between items-center w-[400px] px-4">
-        {/* Back Button */}
         <button
           onClick={() => navigate("/frontview")}
           className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
@@ -88,35 +90,27 @@ const FaceCaptureLeft = () => {
           ←
         </button>
 
-        {/* Capture Button */}
         <button
-          onClick={() => {
-            capture();
-            if (webcamRef.current) {
-              const img = webcamRef.current.getScreenshot();
-              if (img) uploadImage(img);
-            }
-          }}
-          disabled={uploading}
-          className={`px-6 py-2 font-semibold rounded-full shadow-md transition-all duration-300
-            ${uploading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'}
-          `}
+          onClick={capture}
+          className="px-6 py-2 font-semibold rounded-full shadow-md bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
         >
-          {uploading ? "Uploading..." : "Capture Left"}
+          Capture Left
         </button>
 
-        {/* Next Button */}
         <button
-          onClick={() => navigate("/rightview")}
-          className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
+          onClick={uploadImage}
+          disabled={uploading}
+          className={`px-4 py-2 font-bold rounded-full shadow-md
+            ${uploading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-white text-indigo-600 hover:bg-indigo-100'}
+          `}
         >
           →
         </button>
       </div>
 
-      {/* Captured Image Preview */}
+      {/* Preview */}
       {capturedImage && (
         <img
           src={capturedImage}
