@@ -5,7 +5,7 @@ function FrontView() {
   useEffect(() => {
     const uploadFrontImage = async (imageData, username) => {
       try {
-        const response = await fetch('http://localhost:5000/api/upload/front', {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/upload/front`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
