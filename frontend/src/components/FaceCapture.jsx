@@ -32,27 +32,29 @@ const FaceCapture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     setCapturedImage(imageSrc);
 
-    // Save front view to localStorage for session persistence
     localStorage.setItem("frontImage", imageSrc);
   };
 
   const handleNext = async () => {
     if (!capturedImage) return;
-
+  
     setUploading(true);
     try {
       const formData = new FormData();
       formData.append("frontImage", dataURLtoBlob(capturedImage), "front.jpg");
-
+  
+      // ✨ Add username from localStorage
+      const username = localStorage.getItem("username");
+      formData.append("username", username);
+  
       const response = await fetch("http://localhost:5004/api/upload-front", {
         method: "POST",
         body: formData,
       });
-
+  
       const data = await response.json();
       console.log("✅ Front View Upload Success:", data);
-
-      // Navigate to the next page after successful upload
+  
       navigate("/leftview");
     } catch (err) {
       console.error("❌ Front View Upload Failed:", err);

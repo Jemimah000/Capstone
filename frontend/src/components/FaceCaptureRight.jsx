@@ -38,30 +38,34 @@ const FaceCaptureRight = () => {
 
   const uploadImage = async () => {
     const base64Image = localStorage.getItem("rightImage");
-    if (!base64Image) {
-      console.warn("No right image found in localStorage");
+    const username = localStorage.getItem("username"); // 👤 Get the username
+  
+    if (!base64Image || !username) {
+      console.warn("Missing right image or username");
       return;
     }
-
+  
     setUploading(true);
     try {
       const formData = new FormData();
       formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
-
+      formData.append("username", username); // ✨ Send username with image
+  
       const response = await fetch("http://localhost:5004/api/upload-right", {
         method: "POST",
-        body: formData
+        body: formData,
       });
-
+  
       const data = await response.json();
       console.log("✅ Right View Upload Success:", data);
-
-      navigate("/"); 
+  
+      navigate("/"); // Navigate to home or dashboard
     } catch (err) {
       console.error("❌ Right View Upload Failed:", err);
     }
     setUploading(false);
   };
+  
 
   return (
     <div className="space-y-6 flex flex-col items-center">
@@ -124,7 +128,7 @@ const FaceCaptureRight = () => {
           src={capturedImage}
           alt="Captured Right"
           className="mt-4 w-[300px] rounded-lg border"
-        />
+        /> 
       )}
     </div>
   );

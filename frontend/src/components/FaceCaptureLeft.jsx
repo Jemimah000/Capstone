@@ -33,33 +33,35 @@ const FaceCaptureLeft = () => {
       localStorage.setItem("leftImage", imageSrc);
     }
   };
-
   const uploadImage = async () => {
     const base64Image = localStorage.getItem("leftImage");
-    if (!base64Image) {
-      console.warn("No left image found in localStorage");
+    const username = localStorage.getItem("username"); // 💡 Fetch username from localStorage
+  
+    if (!base64Image || !username) {
+      console.warn("Missing left image or username");
       return;
     }
-
+  
     setUploading(true);
     try {
       const formData = new FormData();
       formData.append("leftImage", dataURLtoBlob(base64Image), "left.jpg");
-
+      formData.append("username", username); // 💥 Add username to formData
+  
       const response = await fetch("http://localhost:5004/api/upload-left", {
         method: "POST",
         body: formData,
       });
-
+  
       const data = await response.json();
       console.log("✅ Left View Upload Success:", data);
-
+  
       navigate("/rightview");
     } catch (err) {
       console.error("❌ Left View Upload Failed:", err);
     }
     setUploading(false);
-  };
+  };  
 
   return (
     <div className="space-y-6 flex flex-col items-center">
