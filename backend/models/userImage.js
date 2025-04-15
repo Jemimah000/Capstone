@@ -1,8 +1,8 @@
 // models/Avatar.js
 const mongoose = require('mongoose');
 
-const avatarSchema = new mongoose.Schema({
-  userId: {
+const userImageSchema = new mongoose.Schema({
+  username: {
      type: String, 
      required: true
      },
@@ -24,4 +24,4 @@ const avatarSchema = new mongoose.Schema({
      }
 });
 
-module.exports = mongoose.model('Avatar', avatarSchema);
+module.exports = mongoose.model('userImage', userImageSchema);

@@ -1,53 +1,120 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+const UserImage = require("../models/userImage");
 
 const router = express.Router();
 
-// Setup storage
+// 🔧 Multer Setup
+const uploadDir = path.join(__dirname, '../uploads'); // Adjust path to your folder
+
+// Check if the uploads folder exists, if not, create it
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log('Uploads folder created!');
+}
+
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.fieldname + path.extname(file.originalname);
+  destination: (req, file, cb) => cb(null, uploadDir), // Ensure the uploads folder is used
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${file.fieldname}${path.extname(file.originalname)}`;
     cb(null, uniqueName);
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// FRONT Upload
-router.post("/upload-front", upload.single("frontImage"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, message: "Front image required" });
+// Multer error handling middleware for upload routes
+const multerErrorHandler = (req, res, next) => {
+  upload.single(req.body.fileType)(req, res, (err) => {
+    if (err) {
+      console.error("Multer error:", err);
+      return res.status(400).json({ success: false, message: "Multer error occurred" });
+    }
+    next();
+  });
+};
+
+/* ✅ Upload Front Image */
+router.post("/upload-front", multerErrorHandler, async (req, res) => {
+  const { username } = req.body;
+
+  if (!req.file || !username) {
+    return res.status(400).json({ success: false, message: "Missing frontImage or username" });
   }
-  res.json({ success: true, message: "Front uploaded ✨", path: req.file.path });
+
+  const frontImagePath = req.file.path;
+
+  try {
+    let user = await UserImage.findOne({ username });
+
+    if (!user) {
+      user = new UserImage({ username, frontImage: frontImagePath });
+    } else {
+      user.frontImage = frontImagePath;
+    }
+
+    await user.save();
+    res.json({ success: true, message: "Front image uploaded", path: frontImagePath });
+  } catch (err) {
+    console.error("❌ Upload Front Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
-// LEFT Upload (same for left, right)
-router.post("/upload-left", upload.single("leftImage"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, message: "Left image is required" });
+/* ✅ Upload Left Image */
+router.post("/upload-left", multerErrorHandler, async (req, res) => {
+  const { username } = req.body;
+
+  if (!req.file || !username) {
+    return res.status(400).json({ success: false, message: "Missing leftImage or username" });
   }
-  res.json({
-    success: true,
-    message: "Left image uploaded successfully ✨",
-    path: req.file.path,
-  });
+
+  const leftImagePath = req.file.path;
+
+  try {
+    let user = await UserImage.findOne({ username });
+
+    if (!user) {
+      user = new UserImage({ username, leftImage: leftImagePath });
+    } else {
+      user.leftImage = leftImagePath;
+    }
+
+    await user.save();
+    res.json({ success: true, message: "Left image uploaded", path: leftImagePath });
+  } catch (err) {
+    console.error("❌ Upload Left Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
-// RIGHT Upload
-router.post("/upload-right", upload.single("rightImage"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, message: "Right image is required" });
+/* ✅ Upload Right Image */
+router.post("/upload-right", multerErrorHandler, async (req, res) => {
+  const { username } = req.body;
+
+  if (!req.file || !username) {
+    return res.status(400).json({ success: false, message: "Missing rightImage or username" });
   }
 
-  res.json({
-    success: true,
-    message: "Right image uploaded successfully ✨",
-    path: req.file.path,
-  });
+  const rightImagePath = req.file.path;
+
+  try {
+    let user = await UserImage.findOne({ username });
+
+    if (!user) {
+      user = new UserImage({ username, rightImage: rightImagePath });
+    } else {
+      user.rightImage = rightImagePath;
+    }
+
+    await user.save();
+    res.json({ success: true, message: "Right image uploaded", path: rightImagePath });
+  } catch (err) {
+    console.error("❌ Upload Right Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
 module.exports = router;
