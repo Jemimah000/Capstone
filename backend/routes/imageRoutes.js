@@ -7,7 +7,7 @@ const UserImage = require("../models/userImage");
 const router = express.Router();
 
 // 🔧 Multer Setup
-const uploadDir = path.join(__dirname, '../uploads'); // Adjust path to your folder
+const uploadDir = path.join(__dirname, '../uploads');
 
 // Check if the uploads folder exists, if not, create it
 if (!fs.existsSync(uploadDir)) {
@@ -16,7 +16,7 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir), // Ensure the uploads folder is used
+  destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${file.fieldname}${path.extname(file.originalname)}`;
     cb(null, uniqueName);
@@ -27,7 +27,7 @@ const upload = multer({ storage });
 
 // Multer error handling middleware for upload routes
 const multerErrorHandler = (req, res, next) => {
-  upload.single(req.body.fileType)(req, res, (err) => {
+  upload.single('rightImage')(req, res, (err) => {  // Specify the field name
     if (err) {
       console.error("Multer error:", err);
       return res.status(400).json({ success: false, message: "Multer error occurred" });
