@@ -25,19 +25,21 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Multer error handling middleware for upload routes
-const multerErrorHandler = (req, res, next) => {
-  upload.single('rightImage')(req, res, (err) => {  // Specify the field name
-    if (err) {
-      console.error("Multer error:", err);
-      return res.status(400).json({ success: false, message: "Multer error occurred" });
-    }
-    next();
-  });
+// Dynamic multer error handler
+const multerErrorHandler = (fieldName) => {
+  return (req, res, next) => {
+    upload.single(fieldName)(req, res, (err) => {
+      if (err) {
+        console.error("Multer error:", err);
+        return res.status(400).json({ success: false, message: "Multer error occurred" });
+      }
+      next();
+    });
+  };
 };
 
 /* ✅ Upload Front Image */
-router.post("/upload-front", multerErrorHandler, async (req, res) => {
+router.post("/upload-front", multerErrorHandler('frontImage'), async (req, res) => {
   const { username } = req.body;
 
   if (!req.file || !username) {
@@ -64,7 +66,7 @@ router.post("/upload-front", multerErrorHandler, async (req, res) => {
 });
 
 /* ✅ Upload Left Image */
-router.post("/upload-left", multerErrorHandler, async (req, res) => {
+router.post("/upload-left", multerErrorHandler('leftImage'), async (req, res) => {
   const { username } = req.body;
 
   if (!req.file || !username) {
@@ -91,7 +93,7 @@ router.post("/upload-left", multerErrorHandler, async (req, res) => {
 });
 
 /* ✅ Upload Right Image */
-router.post("/upload-right", multerErrorHandler, async (req, res) => {
+router.post("/upload-right", multerErrorHandler('rightImage'), async (req, res) => {
   const { username } = req.body;
 
   if (!req.file || !username) {
