@@ -36,35 +36,38 @@ const FaceCaptureRight = () => {
     }
   };
 
-  const uploadImage = async () => {
-    const base64Image = localStorage.getItem("rightImage");
-    const username = localStorage.getItem("username"); // 👤 Get the username
-  
-    if (!base64Image || !username) {
-      console.warn("Missing right image or username");
-      return;
-    }
-  
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
-      formData.append("username", username); // ✨ Send username with image
-  
-      const response = await fetch("http://localhost:5004/api/upload-right", {
-        method: "POST",
-        body: formData,
-      });
-  
-      const data = await response.json();
-      console.log("✅ Right View Upload Success:", data);
-  
-      navigate("/"); // Navigate to home or dashboard
-    } catch (err) {
-      console.error("❌ Right View Upload Failed:", err);
-    }
-    setUploading(false);
-  };
+
+const uploadRightImage = async () => {
+  const base64Image = localStorage.getItem("rightImage");
+  const username = localStorage.getItem("username");
+
+  if (!base64Image || !username) {
+    console.warn("Missing right image or username");
+    return;
+  }
+
+  setUploading(true);
+  try {
+    const formData = new FormData();
+    formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
+    formData.append("username", username);
+
+    const response = await fetch("https://ss-aura-gaze-1528.onrender.com", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    console.log("✅ Right View Upload Success:", data);
+
+    navigate("/"); 
+  } catch (err) {
+    console.error("❌ Right View Upload Failed:", err);
+  }
+  setUploading(false);
+};
+
+
   
 
   return (
@@ -110,7 +113,7 @@ const FaceCaptureRight = () => {
 
         {/* Next Button */}
         <button
-          onClick={uploadImage}
+            onClick={uploadRightImage}
           disabled={uploading}
           className={`px-4 py-2 font-bold rounded-full shadow-md
             ${uploading

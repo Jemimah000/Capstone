@@ -23,7 +23,7 @@ export default function NamePage() {
       // Optional: log to confirm submission
       console.log("Submitting name:", name);
 
-      await axios.post("http://localhost:5004/auth/bestFriendName", { name });
+      await axios.post("https://ss-aura-gaze-1528.onrender.com", { name });
       navigate("/frontView");
     } catch (error) {
       setError(error.response?.data?.message || "Something went wrong!");

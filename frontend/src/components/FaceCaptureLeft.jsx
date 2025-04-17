@@ -37,8 +37,8 @@ const FaceCaptureLeft = () => {
   };
 
   const uploadImage = async () => {
-    const base64Image = localStorage.getItem("leftImage");
-    const username = localStorage.getItem("username"); // 👤 Get the username
+    const base64Image = localStorage.getItem("leftImage"); // Fetch the left image from localStorage
+    const username = localStorage.getItem("username");
   
     if (!base64Image || !username) {
       console.warn("Missing left image or username");
@@ -49,9 +49,9 @@ const FaceCaptureLeft = () => {
     try {
       const formData = new FormData();
       formData.append("leftImage", dataURLtoBlob(base64Image), "left.jpg");
-      formData.append("username", username); // ✨ Send username with image
+      formData.append("username", username);
   
-      const response = await fetch("http://localhost:5004/api/upload-left", {
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com", {
         method: "POST",
         body: formData,
       });
@@ -59,12 +59,14 @@ const FaceCaptureLeft = () => {
       const data = await response.json();
       console.log("✅ Left View Upload Success:", data);
   
-      navigate("/"); // Navigate to home or dashboard
+      // Navigate to the next page after uploading
+      navigate("/rightview"); // Navigate to the right view or any other next step
     } catch (err) {
       console.error("❌ Left View Upload Failed:", err);
     }
     setUploading(false);
   };
+  
 
   return (
     <div className="space-y-6 flex flex-col items-center">

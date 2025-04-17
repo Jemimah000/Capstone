@@ -15,7 +15,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5004/auth/login", formData);
+      await axios.post("https://ss-aura-gaze-1528.onrender.com", formData);
       navigate("/name");
     } catch (error) {
       setError(error.response?.data?.message || "Login failed");
@@ -23,10 +23,9 @@ export default function Login() {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-center bg-cover bg-[url('./background.jpg')]">
-      <div className="w-80 h-auto flex flex-col items-center justify-center gap-y-4 px-6 py-4 text-white 
-                      bg-[rgba(255,255,255,0.2)] border border-white backdrop-blur-md 
-                      rounded-xl shadow-lg">
+    <div
+      className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
+      style={{ backgroundImage: "url('/background.jpg')" }} >
         
         {/* Login Heading */}
         <h1 className="text-2xl font-bold font-[Playfair_Display]">LOGIN</h1>

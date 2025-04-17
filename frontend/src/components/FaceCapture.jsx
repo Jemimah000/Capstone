@@ -39,27 +39,32 @@ const FaceCapture = () => {
   const uploadImage = async () => {
     const base64Image = localStorage.getItem("frontImage");
     const username = localStorage.getItem("username"); // 👤 Get the username
-  
+
     if (!base64Image || !username) {
       console.warn("Missing front image or username");
       return;
     }
-  
+
     setUploading(true);
     try {
       const formData = new FormData();
       formData.append("frontImage", dataURLtoBlob(base64Image), "front.jpg");
       formData.append("username", username); // ✨ Send username with image
-  
-      const response = await fetch("http://localhost:5004/api/upload-front", {
+
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com", {
         method: "POST",
         body: formData,
       });
-  
+
       const data = await response.json();
-      console.log("✅ Front View Upload Success:", data);
-  
-      navigate("/"); // Navigate to home or dashboard
+
+      if (response.ok) {
+        console.log("✅ Front View Upload Success:", data);
+        // Navigate to the left page after successful upload
+        navigate("/leftView"); // or any other page you want
+      } else {
+        console.error("❌ Upload failed:", data);
+      }
     } catch (err) {
       console.error("❌ Front View Upload Failed:", err);
     }
