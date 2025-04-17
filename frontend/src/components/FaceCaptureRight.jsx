@@ -52,7 +52,7 @@ const uploadRightImage = async () => {
     formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
     formData.append("username", username);
 
-    const response = await fetch("https://ss-aura-gaze-1528.onrender.com", {
+    const response = await fetch("https://ss-aura-gaze-1528.onrender.com/rightView", {
       method: "POST",
       body: formData,
     });

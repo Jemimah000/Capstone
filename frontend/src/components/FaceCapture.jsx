@@ -51,7 +51,7 @@ const FaceCapture = () => {
       formData.append("frontImage", dataURLtoBlob(base64Image), "front.jpg");
       formData.append("username", username); // ✨ Send username with image
 
-      const response = await fetch("https://ss-aura-gaze-1528.onrender.com", {
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/frontView", {
         method: "POST",
         body: formData,
       });
