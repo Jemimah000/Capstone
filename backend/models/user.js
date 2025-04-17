@@ -12,9 +12,13 @@ const UserSchema = new mongoose.Schema({
   password: { 
     type: String, 
     required: true
-   } 
-}, { timestamps: true });
+   },
+   bestFriendName: {
+    type: String,
+    required: true
+  }
 
+}, { timestamps: true });
 
 
 module.exports = mongoose.model("User", UserSchema);
