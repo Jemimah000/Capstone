@@ -38,38 +38,44 @@ const FaceCapture = () => {
 
   const uploadImage = async () => {
     const base64Image = localStorage.getItem("frontImage");
-    const username = localStorage.getItem("username"); 
-
+    const username = localStorage.getItem("username");
+  
     if (!base64Image || !username) {
       console.warn("Missing front image or username");
       return;
     }
-
+  
     setUploading(true);
     try {
       const formData = new FormData();
       formData.append("frontImage", dataURLtoBlob(base64Image), "front.jpg");
-      formData.append("username", username); 
-
-      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/api/front", {
+      formData.append("username", username);
+  
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/api/upload-front", {
         method: "POST",
         body: formData,
       });
-
-      const data = await response.json();
-
+  
       if (response.ok) {
-        console.log("✅ Front View Upload Success:", data);
-        // Navigate to the left page after successful upload
-        navigate("/leftView"); // or any other page you want
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          console.log("✅ Front View Upload Success:", data);
+          // Navigate to the next page
+          navigate("/leftView");
+        } else {
+          console.error("❌ Expected JSON response, but got something else");
+        }
       } else {
-        console.error("❌ Upload failed:", data);
+        const errorData = await response.text();
+        console.error("❌ Upload failed:", errorData);
       }
-    } catch (err) {
-      console.error("❌ Front View Upload Failed:", err);
+    } catch (error) {
+      console.error("❌ An error occurred during upload:", error);
+    } finally {
+      setUploading(false); // Ensure uploading state is reset
     }
-    setUploading(false);
-  };
+  };  
 
   return (
     <div className="space-y-6 flex flex-col items-center">
