@@ -26,7 +26,6 @@ const FaceCaptureLeft = () => {
   const webcamRef = useRef(null);
   const navigate = useNavigate();
   const [capturedImage, setCapturedImage] = useState(null);
-  const [uploading, setUploading] = useState(false);
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -39,41 +38,27 @@ const FaceCaptureLeft = () => {
   const uploadImage = async () => {
     const base64Image = localStorage.getItem("leftImage");
     const username = localStorage.getItem("username");
-  
+
     if (!base64Image || !username) {
       console.warn("Missing left image or username");
       return;
     }
-  
-    setUploading(true);
+
     try {
       const formData = new FormData();
       formData.append("leftImage", dataURLtoBlob(base64Image), "left.jpg");
       formData.append("username", username);
-  
-      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/auth/leftView", {
+
+      fetch("https://ss-aura-gaze-1528.onrender.com/api/upload-left", {
         method: "POST",
         body: formData,
-      });
-  
-      if (!response.ok) {
-        const errorText = await response.text(); // Read the response text if it's not JSON
-        console.error("Server responded with error:", errorText);
-        return;
-      }
-  
-      const data = await response.json();
-      console.log("✅ Left View Upload Success:", data);
-  
-      // Navigate to the next page after uploading
-      navigate("/rightview");
-    } catch (err) {
-      console.error("❌ Left View Upload Failed:", err);
+      }).catch((err) => console.error("❌ Upload error:", err));
+    } catch (error) {
+      console.error("❌ Something went wrong:", error);
     }
-    setUploading(false);
+
+    navigate("/rightview");
   };
-  
-  
 
   return (
     <div className="space-y-6 flex flex-col items-center">
@@ -106,25 +91,15 @@ const FaceCaptureLeft = () => {
         {/* Capture Button */}
         <button
           onClick={capture}
-          disabled={uploading}
-          className={`px-6 py-2 font-semibold rounded-full shadow-md transition-all duration-300
-            ${uploading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'}
-          `}
+          className="px-6 py-2 font-semibold rounded-full shadow-md bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
         >
-          {uploading ? "Uploading..." : "Capture Left"}
+          Capture Left
         </button>
 
         {/* Next Button */}
         <button
           onClick={uploadImage}
-          disabled={uploading}
-          className={`px-4 py-2 font-bold rounded-full shadow-md
-            ${uploading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-white text-indigo-600 hover:bg-indigo-100'}
-          `}
+          className="px-4 py-2 font-bold rounded-full shadow-md bg-white text-indigo-600 hover:bg-indigo-100"
         >
           →
         </button>
@@ -136,7 +111,7 @@ const FaceCaptureLeft = () => {
           src={capturedImage}
           alt="Captured Left"
           className="mt-4 w-[300px] rounded-lg border"
-        /> 
+        />
       )}
     </div>
   );
