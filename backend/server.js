@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 // ✅ MongoDB Connection
 connectDB();
 
+
 // ✅ Serve static image files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
