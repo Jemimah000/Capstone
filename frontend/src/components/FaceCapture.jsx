@@ -38,7 +38,7 @@ const FaceCapture = () => {
 
   const uploadImage = async () => {
     const base64Image = localStorage.getItem("frontImage");
-    const username = localStorage.getItem("username"); // 👤 Get the username
+    const username = localStorage.getItem("username"); 
 
     if (!base64Image || !username) {
       console.warn("Missing front image or username");
@@ -49,9 +49,9 @@ const FaceCapture = () => {
     try {
       const formData = new FormData();
       formData.append("frontImage", dataURLtoBlob(base64Image), "front.jpg");
-      formData.append("username", username); // ✨ Send username with image
+      formData.append("username", username); 
 
-      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/auth/frontView", {
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/api/upload/front", {
         method: "POST",
         body: formData,
       });
