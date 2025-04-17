@@ -14,7 +14,7 @@ const app = express();
 // ✅ CORS setup must be done early
 const corsOptions = {
   origin: ["http://localhost:5173",
-          "https://ssaura-gaze1528.vercel.app/",
+      "https://ssaura-gaze1528.vercel.app",
 ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"],
