@@ -15,7 +15,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      await axios.post("https://ss-aura-gaze-1528.onrender.com", formData);
+      await axios.post("https://ss-aura-gaze-1528.onrender.com/auth/login", formData);
       navigate("/name");
     } catch (error) {
       setError(error.response?.data?.message || "Login failed");
