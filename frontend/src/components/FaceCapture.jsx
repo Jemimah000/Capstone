@@ -26,7 +26,6 @@ const FaceCapture = () => {
   const webcamRef = useRef(null);
   const navigate = useNavigate();
   const [capturedImage, setCapturedImage] = useState(null);
-  const [uploading, setUploading] = useState(false);
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -39,43 +38,29 @@ const FaceCapture = () => {
   const uploadImage = async () => {
     const base64Image = localStorage.getItem("frontImage");
     const username = localStorage.getItem("username");
-  
+
     if (!base64Image || !username) {
       console.warn("Missing front image or username");
       return;
     }
-  
-    setUploading(true);
+
     try {
       const formData = new FormData();
       formData.append("frontImage", dataURLtoBlob(base64Image), "front.jpg");
       formData.append("username", username);
-  
-      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/api/upload-front", {
+
+      // Fire and forget
+      fetch("https://ss-aura-gaze-1528.onrender.com/api/upload-front", {
         method: "POST",
         body: formData,
-      });
-  
-      if (response.ok) {
-        const contentType = response.headers.get("Content-Type");
-        if (contentType && contentType.includes("application/json")) {
-          const data = await response.json();
-          console.log("✅ Front View Upload Success:", data);
-          // Navigate to the next page
-          navigate("/leftView");
-        } else {
-          console.error("❌ Expected JSON response, but got something else");
-        }
-      } else {
-        const errorData = await response.text();
-        console.error("❌ Upload failed:", errorData);
-      }
+      }).catch((err) => console.error("❌ Upload error:", err));
     } catch (error) {
-      console.error("❌ An error occurred during upload:", error);
-    } finally {
-      setUploading(false); // Ensure uploading state is reset
+      console.error("❌ Something went wrong:", error);
     }
-  };  
+
+    // Immediately go to left view
+    navigate("/leftView");
+  };
 
   return (
     <div className="space-y-6 flex flex-col items-center">
@@ -108,25 +93,15 @@ const FaceCapture = () => {
         {/* Capture Button */}
         <button
           onClick={capture}
-          disabled={uploading}
-          className={`px-6 py-2 font-semibold rounded-full shadow-md transition-all duration-300
-            ${uploading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'}
-          `}
+          className="px-6 py-2 font-semibold rounded-full shadow-md bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
         >
-          {uploading ? "Uploading..." : "Capture Front"}
+          Capture Front
         </button>
 
         {/* Next Button */}
         <button
           onClick={uploadImage}
-          disabled={uploading}
-          className={`px-4 py-2 font-bold rounded-full shadow-md
-            ${uploading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-white text-indigo-600 hover:bg-indigo-100'}
-          `}
+          className="px-4 py-2 font-bold rounded-full shadow-md bg-white text-indigo-600 hover:bg-indigo-100"
         >
           →
         </button>
@@ -138,7 +113,7 @@ const FaceCapture = () => {
           src={capturedImage}
           alt="Captured Front"
           className="mt-4 w-[300px] rounded-lg border"
-        /> 
+        />
       )}
     </div>
   );
