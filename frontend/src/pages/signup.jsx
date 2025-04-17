@@ -24,8 +24,10 @@ export default function Signup() {
     }
 
     try {
-      await axios.post("https://ss-aura-gaze-1528.onrender.com/auth/signup", formData); // Ensure backend URL is correct
-      localStorage.setItem("username", formData.username);
+      const response = await axios.post("https://ss-aura-gaze-1528.onrender.com/auth/signup", formData);
+      localStorage.setItem("username", response.data.username);
+      navigate("/name");
+
       navigate("/name");
     } catch (error) {
       setError(error.response?.data?.message || "Signup failed");
