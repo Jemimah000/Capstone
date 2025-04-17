@@ -23,9 +23,10 @@ export default function Login() {
   };
 
   return (
-    <div
-      className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/background.jpg')" }} >
+    <div className="w-screen h-screen flex items-center justify-center bg-center bg-cover bg-[url('/background.jpg')]">
+      <div className="w-80 h-auto flex flex-col items-center justify-center gap-y-4 px-6 py-4 text-white 
+                      bg-[rgba(255,255,255,0.2)] border border-white backdrop-blur-md 
+                      rounded-xl shadow-lg">
         
         {/* Login Heading */}
         <h1 className="text-2xl font-bold font-[Playfair_Display]">LOGIN</h1>
@@ -37,8 +38,8 @@ export default function Login() {
         <input 
           type="text"
           name="email"
-          placeholder="email"
-          value={formData.username}
+          placeholder="Email"
+          value={formData.email}
           onChange={handleChange}
           className="w-full px-3 py-2 bg-transparent border-b border-white text-white outline-none"
         />
