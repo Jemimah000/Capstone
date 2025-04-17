@@ -36,39 +36,36 @@ const FaceCaptureRight = () => {
     }
   };
 
+  const uploadRightImage = async () => {
+    const base64Image = localStorage.getItem("rightImage");
+    const username = localStorage.getItem("username");
 
-const uploadRightImage = async () => {
-  const base64Image = localStorage.getItem("rightImage");
-  const username = localStorage.getItem("username");
+    if (!base64Image || !username) {
+      console.warn("Missing right image or username");
+      return;
+    }
 
-  if (!base64Image || !username) {
-    console.warn("Missing right image or username");
-    return;
-  }
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
+      formData.append("username", username);
 
-  setUploading(true);
-  try {
-    const formData = new FormData();
-    formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
-    formData.append("username", username);
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/auth/rightView", {
+        method: "POST",
+        body: formData,
+      });
 
-    const response = await fetch("https://ss-aura-gaze-1528.onrender.com/auth/rightView", {
-      method: "POST",
-      body: formData,
-    });
+      const data = await response.json();
+      console.log("✅ Right View Upload Success:", data);
 
-    const data = await response.json();
-    console.log("✅ Right View Upload Success:", data);
-
-    navigate("/"); 
-  } catch (err) {
-    console.error("❌ Right View Upload Failed:", err);
-  }
-  setUploading(false);
-};
-
-
-  
+      navigate("/"); // Go to home or wherever you want
+    } catch (err) {
+      console.error("❌ Right View Upload Failed:", err);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div className="space-y-6 flex flex-col items-center">
@@ -113,7 +110,7 @@ const uploadRightImage = async () => {
 
         {/* Next Button */}
         <button
-            onClick={uploadRightImage}
+          onClick={uploadRightImage}
           disabled={uploading}
           className={`px-4 py-2 font-bold rounded-full shadow-md
             ${uploading
@@ -131,7 +128,7 @@ const uploadRightImage = async () => {
           src={capturedImage}
           alt="Captured Right"
           className="mt-4 w-[300px] rounded-lg border"
-        /> 
+        />
       )}
     </div>
   );

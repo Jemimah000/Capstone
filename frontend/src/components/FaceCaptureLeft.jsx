@@ -37,7 +37,7 @@ const FaceCaptureLeft = () => {
   };
 
   const uploadImage = async () => {
-    const base64Image = localStorage.getItem("leftImage"); // Fetch the left image from localStorage
+    const base64Image = localStorage.getItem("leftImage");
     const username = localStorage.getItem("username");
   
     if (!base64Image || !username) {
@@ -56,16 +56,23 @@ const FaceCaptureLeft = () => {
         body: formData,
       });
   
+      if (!response.ok) {
+        const errorText = await response.text(); // Read the response text if it's not JSON
+        console.error("Server responded with error:", errorText);
+        return;
+      }
+  
       const data = await response.json();
       console.log("✅ Left View Upload Success:", data);
   
       // Navigate to the next page after uploading
-      navigate("/rightview"); // Navigate to the right view or any other next step
+      navigate("/rightview");
     } catch (err) {
       console.error("❌ Left View Upload Failed:", err);
     }
     setUploading(false);
   };
+  
   
 
   return (
