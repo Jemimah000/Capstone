@@ -1,1 +1,10 @@
-<h1>DashBoard</h1>
+function Dashboard() {
+    return (
+      <div>
+        <h1>Hello, Dashboard!</h1>
+      </div>
+    );
+  }
+  
+  export default Dashboard;
+  
