@@ -49,7 +49,7 @@ const FaceCaptureLeft = () => {
       formData.append("leftImage", dataURLtoBlob(base64Image), "left.jpg");
       formData.append("username", username);
 
-      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/auth/leftView", {
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/api/upload-left", {
         method: "POST",
         body: formData,
       });
@@ -72,6 +72,7 @@ const FaceCaptureLeft = () => {
 
   return (
     <div className="space-y-6 flex flex-col items-center">
+      {/* Webcam with guide */}
       <div className="relative rounded-xl overflow-hidden border-2 border-white/20 shadow-md w-[400px] h-[300px]">
         <Webcam
           audio={false}
@@ -87,7 +88,9 @@ const FaceCaptureLeft = () => {
         />
       </div>
 
+      {/* Buttons Row: Back | Capture | Next */}
       <div className="flex justify-between items-center w-[400px] px-4">
+        {/* Back Button */}
         <button
           onClick={() => navigate("/frontview")}
           className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
@@ -95,6 +98,7 @@ const FaceCaptureLeft = () => {
           ←
         </button>
 
+        {/* Capture Button */}
         <button
           onClick={capture}
           className="px-6 py-2 font-semibold rounded-full shadow-md bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
@@ -102,6 +106,7 @@ const FaceCaptureLeft = () => {
           Capture
         </button>
 
+        {/* Next Button */}
         <button
           onClick={uploadImage}
           className="px-4 py-2 font-bold rounded-full shadow-md bg-white text-indigo-600 hover:bg-indigo-100"
@@ -110,6 +115,7 @@ const FaceCaptureLeft = () => {
         </button>
       </div>
 
+      {/* Preview */}
       {capturedImage && (
         <img
           src={capturedImage}
