@@ -26,6 +26,7 @@ const FaceCaptureRight = () => {
   const webcamRef = useRef(null);
   const navigate = useNavigate();
   const [capturedImage, setCapturedImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -35,7 +36,7 @@ const FaceCaptureRight = () => {
     }
   };
 
-  const uploadImage = async () => {
+  const uploadRightImage = async () => {
     const base64Image = localStorage.getItem("rightImage");
     const username = localStorage.getItem("username");
 
@@ -44,25 +45,31 @@ const FaceCaptureRight = () => {
       return;
     }
 
+    setUploading(true);
     try {
       const formData = new FormData();
       formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
       formData.append("username", username);
 
-      fetch("https://ss-aura-gaze-1528.onrender.com/api/upload-right", {
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/auth/rightView", {
         method: "POST",
         body: formData,
-      }).catch((err) => console.error("❌ Upload error:", err));
-    } catch (error) {
-      console.error("❌ Something went wrong:", error);
-    }
+      });
 
-    navigate("/");
+      const data = await response.json();
+      console.log("✅ Right View Upload Success:", data);
+      console.log("Images saved to MongoDB:", data); // Added for MongoDB confirmation
+
+      navigate("/dashboard"); 
+    } catch (err) {
+      console.error("❌ Right View Upload Failed:", err);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
     <div className="space-y-6 flex flex-col items-center">
-      {/* Webcam with guide */}
       <div className="relative rounded-xl overflow-hidden border-2 border-white/20 shadow-md w-[400px] h-[300px]">
         <Webcam
           audio={false}
@@ -78,9 +85,7 @@ const FaceCaptureRight = () => {
         />
       </div>
 
-      {/* Buttons Row: Back | Capture | Next */}
       <div className="flex justify-between items-center w-[400px] px-4">
-        {/* Back Button */}
         <button
           onClick={() => navigate("/leftview")}
           className="px-4 py-2 font-bold rounded-full bg-white text-indigo-600 hover:bg-indigo-100 shadow-md"
@@ -88,24 +93,31 @@ const FaceCaptureRight = () => {
           ←
         </button>
 
-        {/* Capture Button */}
         <button
           onClick={capture}
-          className="px-6 py-2 font-semibold rounded-full shadow-md bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
+          disabled={uploading}
+          className={`px-6 py-2 font-semibold rounded-full shadow-md transition-all duration-300
+            ${uploading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'}
+          `}
         >
-          Capture Right
+          {uploading ? "Uploading..." : "Capture"}
         </button>
 
-        {/* Next Button */}
         <button
-          onClick={uploadImage}
-          className="px-4 py-2 font-bold rounded-full shadow-md bg-white text-indigo-600 hover:bg-indigo-100"
+          onClick={uploadRightImage}
+          disabled={uploading}
+          className={`px-4 py-2 font-bold rounded-full shadow-md
+            ${uploading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-white text-indigo-600 hover:bg-indigo-100'}
+          `}
         >
           →
         </button>
       </div>
 
-      {/* Preview */}
       {capturedImage && (
         <img
           src={capturedImage}

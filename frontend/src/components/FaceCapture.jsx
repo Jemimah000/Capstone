@@ -49,17 +49,26 @@ const FaceCapture = () => {
       formData.append("frontImage", dataURLtoBlob(base64Image), "front.jpg");
       formData.append("username", username);
 
-      // Fire and forget
-      fetch("https://ss-aura-gaze-1528.onrender.com/api/upload-front", {
+      const response = await fetch("https://ss-aura-gaze-1528.onrender.com/api/upload-front", {
         method: "POST",
         body: formData,
-      }).catch((err) => console.error("❌ Upload error:", err));
-    } catch (error) {
-      console.error("❌ Something went wrong:", error);
-    }
+      });
 
-    // Immediately go to left view
-    navigate("/leftView");
+      if (!response.ok) {
+        const errorText = await response.text(); // Read the response text if it's not JSON
+        console.error("❌ Server responded with error:", errorText);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("✅ Front View Upload Success:", data);
+      console.log("Images saved to MongoDB:", data); // Added for MongoDB confirmation
+
+      // Immediately go to left view after upload
+      navigate("/leftView");
+    } catch (error) {
+      console.error("❌ Something went wrong during upload:", error);
+    }
   };
 
   return (
