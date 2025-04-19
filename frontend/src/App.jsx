@@ -8,6 +8,7 @@ import NamePage from "./pages/name";
 import FrontView from "./pages/frontView";
 import LeftView from "./pages/leftView";
 import RightView from "./pages/RightView";
+import DashBoard from "./pages/dashboard";
 function App() {
   return (
     <Router>
@@ -20,6 +21,7 @@ function App() {
         <Route path="/frontview" element={<FrontView/>}/>
         <Route path="/leftview" element={<LeftView/>}/>
         <Route path="/rightview" element={<RightView/>}/>
+        <Route path="/dashboard" element={<DashBoard/>}/>
       </Routes>
     </Router>
   );
