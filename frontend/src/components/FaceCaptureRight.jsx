@@ -26,7 +26,6 @@ const FaceCaptureRight = () => {
   const webcamRef = useRef(null);
   const navigate = useNavigate();
   const [capturedImage, setCapturedImage] = useState(null);
-  const [uploading, setUploading] = useState(false);
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -36,7 +35,7 @@ const FaceCaptureRight = () => {
     }
   };
 
-  const uploadRightImage = async () => {
+  const uploadImage = async () => {
     const base64Image = localStorage.getItem("rightImage");
     const username = localStorage.getItem("username");
 
@@ -45,7 +44,6 @@ const FaceCaptureRight = () => {
       return;
     }
 
-    setUploading(true);
     try {
       const formData = new FormData();
       formData.append("rightImage", dataURLtoBlob(base64Image), "right.jpg");
@@ -56,15 +54,19 @@ const FaceCaptureRight = () => {
         body: formData,
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ Server responded with error:", errorText);
+        return;
+      }
+
       const data = await response.json();
       console.log("✅ Right View Upload Success:", data);
-      console.log("Images saved to MongoDB:", data); // Added for MongoDB confirmation
+      console.log("Images saved to MongoDB:", data);
 
-      navigate("/dashboard"); 
-    } catch (err) {
-      console.error("❌ Right View Upload Failed:", err);
-    } finally {
-      setUploading(false);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("❌ Something went wrong during upload:", error);
     }
   };
 
@@ -95,24 +97,14 @@ const FaceCaptureRight = () => {
 
         <button
           onClick={capture}
-          disabled={uploading}
-          className={`px-6 py-2 font-semibold rounded-full shadow-md transition-all duration-300
-            ${uploading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'}
-          `}
+          className="px-6 py-2 font-semibold rounded-full shadow-md bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
         >
-          {uploading ? "Uploading..." : "Capture"}
+          Capture
         </button>
 
         <button
-          onClick={uploadRightImage}
-          disabled={uploading}
-          className={`px-4 py-2 font-bold rounded-full shadow-md
-            ${uploading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-white text-indigo-600 hover:bg-indigo-100'}
-          `}
+          onClick={uploadImage}
+          className="px-4 py-2 font-bold rounded-full shadow-md bg-white text-indigo-600 hover:bg-indigo-100"
         >
           →
         </button>
