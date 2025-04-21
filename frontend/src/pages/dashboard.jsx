@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [showNextButton, setShowNextButton] = useState(true);  // State to control the button visibility
+  const [showNextButton, setShowNextButton] = useState(true);
 
   useEffect(() => {
     const iframe = document.getElementById("rpm-frame");
@@ -20,10 +20,10 @@ const Dashboard = () => {
             const avatarUrl = parsedData.data?.url;
             console.log("✨ Avatar URL:", avatarUrl);
 
-            const username = localStorage.getItem("username");
-            console.log("📛 Username from localStorage:", username);
-            console.log("📥 Incoming avatar data:", username, avatarUrl);
+            // Save avatar URL in localStorage
+            localStorage.setItem("avatarUrl", avatarUrl);
 
+            const username = localStorage.getItem("username");
             fetch("https://ss-aura-gaze-1528.onrender.com/auth/save-avatar", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -32,13 +32,10 @@ const Dashboard = () => {
               .then((res) => res.json())
               .then((data) => {
                 console.log("✅ Avatar saved!", data);
-                setShowNextButton(true);  // Show the button after saving avatar
-              })
-              .catch((err) => {
-                console.error("❌ Error saving avatar:", err);
+                setShowNextButton(true);
               });
 
-            setShowNextButton(false);  // Hide the button while avatar is being exported
+            setShowNextButton(false);
           }
         } catch (err) {
           console.error("Error parsing message:", err);
@@ -75,7 +72,6 @@ const Dashboard = () => {
           className="w-full h-full border-none"
         ></iframe>
 
-        {/* Conditionally render the Next button at the top right with a full opacity gradient */}
         {showNextButton && (
           <div className="absolute top-[12px] right-[30px] z-50">
             <button
