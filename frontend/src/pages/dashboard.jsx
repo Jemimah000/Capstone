@@ -1,57 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AvatarCreate from "../components/avatarCreate";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [showNextButton, setShowNextButton] = useState(true);
+  const [showNextButton, setShowNextButton] = useState(false);
 
-  useEffect(() => {
-    const iframe = document.getElementById("rpm-frame");
-
-    window.addEventListener("message", (event) => {
-      const json = event.data;
-      if (typeof json === "string") {
-        try {
-          const parsedData = JSON.parse(json);
-          if (
-            parsedData?.source === "readyplayerme" &&
-            parsedData?.eventName === "v1.avatar.exported"
-          ) {
-            const avatarUrl = parsedData.data?.url;
-            console.log("✨ Avatar URL:", avatarUrl);
-
-            // Save avatar URL in localStorage
-            localStorage.setItem("avatarUrl", avatarUrl);
-
-            const username = localStorage.getItem("username");
-            fetch("https://ss-aura-gaze-1528.onrender.com/auth/save-avatar", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ username, avatarUrl }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                console.log("✅ Avatar saved!", data);
-                setShowNextButton(true);
-              });
-
-            setShowNextButton(false);
-          }
-        } catch (err) {
-          console.error("Error parsing message:", err);
-        }
-      }
-    });
-
-    iframe?.contentWindow?.postMessage(
-      JSON.stringify({
-        target: "readyplayerme",
-        type: "subscribe",
-        eventName: "v1.avatar.exported",
-      }),
-      "*"
-    );
-  }, []);
+  const handleAvatarSaved = () => {
+    setShowNextButton(true); // Show "Save →" after avatar is exported and saved
+  };
 
   const handleNext = () => {
     navigate("/chat");
@@ -64,13 +21,7 @@ const Dashboard = () => {
       </div>
 
       <div className="flex-1 relative">
-        <iframe
-          id="rpm-frame"
-          title="Ready Player Me"
-          allow="camera *; microphone *"
-          src="https://readyplayer.me/avatar?frameApi"
-          className="w-full h-full border-none"
-        ></iframe>
+        <AvatarCreate onAvatarSaved={handleAvatarSaved} />
 
         {showNextButton && (
           <div className="absolute top-[12px] right-[30px] z-50">
