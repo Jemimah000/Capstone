@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 const AvatarCreate = ({ onAvatarSaved }) => {
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [error, setError] = useState(null);
-
   useEffect(() => {
     const iframe = document.getElementById("rpm-frame");
 
@@ -19,11 +16,8 @@ const AvatarCreate = ({ onAvatarSaved }) => {
             const url = parsedData.data?.url;
             console.log("🎯 Avatar URL:", url);
 
-            // Save in localStorage and state
             localStorage.setItem("avatarUrl", url);
-            setAvatarUrl(url);
 
-            // Send to backend (MongoDB)
             const username = localStorage.getItem("username");
             fetch("https://ss-aura-gaze-1528.onrender.com/auth/save-avatar", {
               method: "POST",
@@ -35,14 +29,10 @@ const AvatarCreate = ({ onAvatarSaved }) => {
                 console.log("✅ Avatar saved in DB!", data);
                 if (onAvatarSaved) onAvatarSaved(url);
               })
-              .catch((err) => {
-                console.error("❌ Error saving avatar:", err);
-                setError("Failed to save avatar.");
-              });
+              .catch((err) => console.error("❌ Error saving avatar:", err));
           }
         } catch (err) {
           console.error("❌ Error parsing message:", err);
-          setError("Error processing avatar.");
         }
       }
     };
@@ -59,19 +49,16 @@ const AvatarCreate = ({ onAvatarSaved }) => {
     );
 
     return () => window.removeEventListener("message", receiveMessage);
-  }, [onAvatarSaved]);
+  }, []);
 
   return (
-    <div>
-      {error && <p className="text-red-500">{error}</p>}
-      <iframe
-        id="rpm-frame"
-        title="Ready Player Me"
-        allow="camera *; microphone *"
-        src="https://readyplayer.me/avatar?frameApi"
-        className="w-full h-full border-none"
-      ></iframe>
-    </div>
+    <iframe
+      id="rpm-frame"
+      title="Ready Player Me"
+      allow="camera *; microphone *"
+      src="https://readyplayer.me/avatar?frameApi&clearCache&hideUI=button"
+      className="w-full h-full border-none"
+    ></iframe>
   );
 };
 
