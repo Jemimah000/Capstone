@@ -21,8 +21,8 @@ const Dashboard = () => {
       </div>
 
       <div className="flex-1 relative">
-        <AvatarCreate onAvatarSaved={handleAvatarSaved} />
-
+        <AvatarCreate onAvatarSaved={handleAvatarSaved} /> {/* AvatarCreate component */}
+        
         {showNextButton && (
           <div className="absolute top-[12px] right-[30px] z-50">
             <button

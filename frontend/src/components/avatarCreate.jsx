@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const AvatarCreate = ({ onAvatarSaved }) => {
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const iframe = document.getElementById("rpm-frame");
@@ -34,10 +35,14 @@ const AvatarCreate = ({ onAvatarSaved }) => {
                 console.log("✅ Avatar saved in DB!", data);
                 if (onAvatarSaved) onAvatarSaved(url);
               })
-              .catch((err) => console.error("❌ Error saving avatar:", err));
+              .catch((err) => {
+                console.error("❌ Error saving avatar:", err);
+                setError("Failed to save avatar.");
+              });
           }
         } catch (err) {
           console.error("❌ Error parsing message:", err);
+          setError("Error processing avatar.");
         }
       }
     };
@@ -54,16 +59,19 @@ const AvatarCreate = ({ onAvatarSaved }) => {
     );
 
     return () => window.removeEventListener("message", receiveMessage);
-  }, []);
+  }, [onAvatarSaved]);
 
   return (
-    <iframe
-      id="rpm-frame"
-      title="Ready Player Me"
-      allow="camera *; microphone *"
-      src="https://readyplayer.me/avatar?frameApi"
-      className="w-full h-full border-none"
-    ></iframe>
+    <div>
+      {error && <p className="text-red-500">{error}</p>}
+      <iframe
+        id="rpm-frame"
+        title="Ready Player Me"
+        allow="camera *; microphone *"
+        src="https://readyplayer.me/avatar?frameApi"
+        className="w-full h-full border-none"
+      ></iframe>
+    </div>
   );
 };
 
