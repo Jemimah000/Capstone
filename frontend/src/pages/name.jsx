@@ -42,7 +42,7 @@ export default function NamePage() {
         username,
       });
 
-      navigate("/frontView");
+      navigate("/dashboard");
     } catch (error) {
       setError(error.response?.data?.message || "Something went wrong!");
     }
