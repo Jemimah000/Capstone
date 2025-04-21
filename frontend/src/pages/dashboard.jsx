@@ -21,6 +21,9 @@ const Dashboard = () => {
             console.log("✨ Avatar URL:", avatarUrl);
 
             const username = localStorage.getItem("username");
+            console.log("📛 Username from localStorage:", username);
+            console.log("📥 Incoming avatar data:", username, avatarUrl);
+
             fetch("https://ss-aura-gaze-1528.onrender.com/auth/save-avatar", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -30,6 +33,9 @@ const Dashboard = () => {
               .then((data) => {
                 console.log("✅ Avatar saved!", data);
                 setShowNextButton(true);  // Show the button after saving avatar
+              })
+              .catch((err) => {
+                console.error("❌ Error saving avatar:", err);
               });
 
             setShowNextButton(false);  // Hide the button while avatar is being exported
