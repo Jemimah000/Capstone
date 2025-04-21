@@ -1,5 +1,5 @@
 // controller/avatar.js
-const Avatar = require("../models/avatar");
+const User = require("../models/user");
 
 exports.saveAvatar = async (req, res) => {
   const { username, avatarUrl } = req.body;
@@ -11,17 +11,16 @@ exports.saveAvatar = async (req, res) => {
   }
 
   try {
-    const existingAvatar = await Avatar.findOne({ username });
+    const user = await User.findOne({ username });
 
-    if (existingAvatar) {
-      existingAvatar.avatarUrl = avatarUrl;
-      await existingAvatar.save();
-      return res.status(200).json({ message: "Avatar updated successfully!" });
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
     }
 
-    const newAvatar = new Avatar({ username, avatarUrl });
-    await newAvatar.save();
-    res.status(201).json({ message: "Avatar saved successfully!" });
+    user.avatarUrl = avatarUrl;
+    await user.save();
+
+    res.status(200).json({ message: "Avatar saved successfully!" });
   } catch (err) {
     console.error("❌ Error saving avatar:", err);
     res.status(500).json({ error: "Server error." });

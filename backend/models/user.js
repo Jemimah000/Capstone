@@ -16,7 +16,10 @@ const UserSchema = new mongoose.Schema({
    bestFriendName: {
     type: String,
     required: false
-  }
+  },
+  avatarUrl: { 
+    type: String,
+  } 
 
 }, { timestamps: true });
 
