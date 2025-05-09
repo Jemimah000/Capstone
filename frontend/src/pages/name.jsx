@@ -42,22 +42,31 @@ export default function NamePage() {
         username,
       });
 
-      navigate("/dashboard");
+      navigate("/gender");
     } catch (error) {
       setError(error.response?.data?.message || "Something went wrong!");
     }
   };
 
   return (
-    <div
-      className="w-screen h-screen flex flex-col items-center justify-center bg-center bg-cover"
-      style={{ backgroundImage: "url('/background.jpg')" }}
-    >
+    <div className="w-screen h-screen relative overflow-hidden">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+      >
+        <source src="/183279-870457579_medium.mp4" type="video/mp4" />
+      </video>
+
+      {/* Form Content */}
       <form
         onSubmit={handleSubmit}
-        className="w-80 flex flex-col items-center gap-y-4 px-7 py-7 text-white 
-                  bg-[rgba(255,255,255,0.2)] border border-white backdrop-blur-md 
-                  rounded-xl shadow-lg"
+        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                   w-80 flex flex-col items-center gap-y-4 px-7 py-7 text-white 
+                   bg-[rgba(255,255,255,0.2)] border border-white backdrop-blur-md 
+                   rounded-xl shadow-lg z-10"
       >
         <h1 className="text-2xl font-bold font-[Playfair_Display] text-center">
           Give a name for your best friend
